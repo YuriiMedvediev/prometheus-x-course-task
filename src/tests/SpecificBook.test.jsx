@@ -26,7 +26,6 @@ describe('SpecificBook', () => {
   it('renders with quantity set to 1', () => {
     renderSpecificBook(['/books/1']);
 
-    // Verify that the quantity input value is initially set to 1
     const quantityInput = screen.getByTestId('quantity-input');
     expect(quantityInput.value).toBe('1');
   });

@@ -11,11 +11,11 @@ function NotFoundPage() {
   useEffect(() => {
     const timer1 = setTimeout(() => {
       setShowOwl(true);
-    }, 1000);
+    }, 500);
 
     const timer2 = setTimeout(() => {
       setShowPopover(true);
-    }, 3000);
+    }, 1000);
 
     return () => {
       clearTimeout(timer1);
@@ -29,7 +29,7 @@ function NotFoundPage() {
       opacity: showOwl ? 1 : 0,
     },
     config: config.default,
-    delay: 1000,
+    delay: 500,
   });
 
   const popoverAnimation = useSpring({

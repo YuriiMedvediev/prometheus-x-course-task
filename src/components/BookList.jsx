@@ -165,7 +165,7 @@ function BookList({ isUserLoggedIn }) {
           </section>
         </div>
       ) : (
-        <div>
+        <section className="bookListSection">
           <section className="bookFilterSection">
             <Input
               className="searchInput"
@@ -206,42 +206,41 @@ function BookList({ isUserLoggedIn }) {
               <FilterAltOffIcon />
             </IconButton>
           </section>
-          <section className="bookListSection">
-            {booksAfterFilter.length > 0 ? (
-              booksAfterFilter.map((book) => (
-                <Paper elevation={6} className="bookCard" key={book.id}>
-                  <div className="bookCardHeader">
-                    <img src={book.image || notFoundImage} alt={book.title} />
-                    <h3
-                      onMouseEnter={(event) =>
-                        handlePopoverOpen(event, book.title)
-                      }
-                      onMouseLeave={handlePopoverClose}
-                    >
-                      {shortenTitle(book.title)}
-                    </h3>
-                    <p>{book.author}</p>
-                  </div>
-                  <Divider />
-                  <div className="bookCardFooter">
-                    <h3>${book.price}</h3>
-                    <Button
-                      className="viewBtn"
-                      type="button"
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      onClick={() => handleClickView(book.id)}
-                    >
-                      View
-                    </Button>
-                  </div>
-                </Paper>
-              ))
-            ) : (
-              <h2>Sorry, such books are not found!!!</h2>
-            )}
-          </section>
+          {booksAfterFilter.length > 0 ? (
+            booksAfterFilter.map((book) => (
+              <Paper elevation={6} className="bookCard" key={book.id}>
+                <div className="bookCardHeader">
+                  <img src={book.image || notFoundImage} alt={book.title} />
+                  <h3
+                    onMouseEnter={(event) =>
+                      handlePopoverOpen(event, book.title)
+                    }
+                    onMouseLeave={handlePopoverClose}
+                  >
+                    {shortenTitle(book.title)}
+                  </h3>
+                  <p>{book.author}</p>
+                </div>
+                <Divider />
+                <div className="bookCardFooter">
+                  <h3>${book.price}</h3>
+                  <Button
+                    className="viewBtn"
+                    type="button"
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => handleClickView(book.id)}
+                  >
+                    View
+                  </Button>
+                </div>
+              </Paper>
+            ))
+          ) : (
+            <h2>Sorry, such books are not found!!!</h2>
+          )}
+
           <Popover
             id="mouse-over-popover"
             sx={{
@@ -262,7 +261,7 @@ function BookList({ isUserLoggedIn }) {
           >
             <Typography sx={{ p: 1 }}>{popOverTitle}</Typography>
           </Popover>
-        </div>
+        </section>
       )}
     </div>
   );
