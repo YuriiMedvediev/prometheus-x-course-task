@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
+import notFoundImage from '../assets/imageNotFound.png';
 
 const CartContext = createContext();
 
