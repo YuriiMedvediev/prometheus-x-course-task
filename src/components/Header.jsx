@@ -1,15 +1,17 @@
-import { Button } from '@mui/material';
+import { Button, Popover, Typography } from '@mui/material';
 import favicon from '../assets/favicon.ico';
 import avatar from '../assets/avatar.png';
 import cart from '../assets/cart.png';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import cn from 'classnames';
 import { Link } from 'react-router-dom';
 import { Badge } from '@mui/material';
 import { CartContext } from '../contexts/CartContext';
 
 function Header({ userName, isUserLoggedIn, handleSignOut }) {
+  const [anchorEl, setAnchorEl] = useState(null);
+
   const { totalQuantity, totalAmount } = useContext(CartContext);
   const navigate = useNavigate();
 
@@ -18,6 +20,16 @@ function Header({ userName, isUserLoggedIn, handleSignOut }) {
     handleSignOut();
     navigate('/signin');
   };
+
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
 
   return (
     <header>
@@ -40,7 +52,7 @@ function Header({ userName, isUserLoggedIn, handleSignOut }) {
       <section className={cn('controls', { hidden: !isUserLoggedIn })}>
         <div className="cartControl">
           <Link to="/cart">
-            <img src={cart} height="80" alt="cart" />
+            <img id="cartImg" src={cart} alt="cart" />
           </Link>
           {totalQuantity > 0 && (
             <Badge
@@ -77,8 +89,52 @@ function Header({ userName, isUserLoggedIn, handleSignOut }) {
         >
           Sign-Out
         </Button>
-        <img src={avatar} height="80" alt="avatar" />
-        <h3>{userName}</h3>
+        <div
+          className="userBlock"
+          onMouseEnter={handlePopoverOpen}
+          onMouseLeave={handlePopoverClose}
+        >
+          <img src={avatar} alt="avatar" id="avatarImg" />
+          <h3>{userName}</h3>
+        </div>
+
+        <Popover
+          id="mouse-over-popover"
+          sx={{
+            pointerEvents: 'none',
+          }}
+          open={open}
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          onClose={handlePopoverClose}
+          disableRestoreFocus
+        >
+          <Typography
+            sx={{
+              p: 1,
+              fontSize: '20px',
+              textAlign: 'center',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            style={{ width: '200px', height: '300px' }}
+          >
+            Someday,
+            <br />
+            it will be a cool advanced profile menu hear.
+            <br />
+            <br />
+            But not today!
+          </Typography>
+        </Popover>
       </section>
     </header>
   );

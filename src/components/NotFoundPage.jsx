@@ -68,7 +68,11 @@ function NotFoundPage() {
           boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
         }}
       >
-        Hey Bro! Wanna some <Link to="/books">books</Link>?
+        Hey Bro! Wanna some{' '}
+        <Link to="/books" style={{ textDecoration: 'underline' }}>
+          books
+        </Link>
+        ?
       </animated.div>
     </section>
   );

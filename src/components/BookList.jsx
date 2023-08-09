@@ -1,8 +1,10 @@
 import { useContext, useState, useEffect } from 'react';
 import { BooksContext } from '../contexts/BooksContext';
+import { CartContext } from '../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import {
+  Badge,
   Divider,
   Button,
   Typography,
@@ -18,6 +20,7 @@ import { IconButton } from '@mui/material';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import notFoundImage from '../assets/imageNotFound.png';
 import cn from 'classnames';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 function BookList({ isUserLoggedIn }) {
   const [loading, setLoading] = useState(true);
@@ -28,6 +31,8 @@ function BookList({ isUserLoggedIn }) {
   const [popOverTitle, setPopOverTitle] = useState('');
 
   const books = useContext(BooksContext);
+  const { getQuantityById, addToCart, handleAddToCartAnimation } =
+    useContext(CartContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -93,24 +98,38 @@ function BookList({ isUserLoggedIn }) {
     setAnchorEl(null);
   };
 
+  const handleAddToCartButtonClick = (event, book) => {
+    event.preventDefault();
+    const bookItem = {
+      id: book.id,
+      title: book.title,
+      price: book.price,
+      image: book.image,
+      avaliableQuantity: book.amount,
+      quantity: 1,
+    };
+    handleAddToCartAnimation(event, 1, book);
+    addToCart(bookItem, false);
+  };
+
   const open = Boolean(anchorEl);
 
   return (
     <div className="bookList">
       {loading ? (
-        <div>
+        <section className="bookListSection">
           <section className="bookFilterSection">
             <Skeleton
               variant="rounded"
               animation="wave"
-              width={200}
-              height={40}
+              width={250}
+              height={30}
             />
             <Skeleton
               variant="rounded"
               animation="wave"
-              width={200}
-              height={40}
+              width={250}
+              height={30}
             />
             <Skeleton
               variant="circular"
@@ -123,26 +142,25 @@ function BookList({ isUserLoggedIn }) {
           <section className="bookListSection">
             {Array(15)
               .fill()
-              .map((index) => (
+              .map((item, index) => (
                 <Paper elevation={6} className="bookCard" key={index}>
                   <div className="bookCardHeader">
                     <Skeleton
+                      className="bookCardImage"
                       variant="rectangular"
                       animation="wave"
-                      width={200}
-                      height={300}
                     />
                     <Skeleton
                       variant="text"
                       animation="wave"
-                      width={200}
-                      height={40}
+                      width={190}
+                      height={30}
                     />
                     <Skeleton
                       variant="text"
                       animation="wave"
-                      width={200}
-                      height={40}
+                      width={190}
+                      height={30}
                     />
                   </div>
                   <Divider />
@@ -163,7 +181,7 @@ function BookList({ isUserLoggedIn }) {
                 </Paper>
               ))}
           </section>
-        </div>
+        </section>
       ) : (
         <section className="bookListSection">
           <section className="bookFilterSection">
@@ -210,7 +228,25 @@ function BookList({ isUserLoggedIn }) {
             booksAfterFilter.map((book) => (
               <Paper elevation={6} className="bookCard" key={book.id}>
                 <div className="bookCardHeader">
-                  <img src={book.image || notFoundImage} alt={book.title} />
+                  {getQuantityById(book.id) > 0 ? (
+                    <Badge
+                      badgeContent={getQuantityById(book.id)}
+                      color="secondary"
+                    >
+                      <img
+                        className="bookCardImage"
+                        src={book.image || notFoundImage}
+                        alt={book.title}
+                      />
+                    </Badge>
+                  ) : (
+                    <img
+                      className="bookCardImage"
+                      src={book.image || notFoundImage}
+                      alt={book.title}
+                    />
+                  )}
+
                   <h3
                     onMouseEnter={(event) =>
                       handlePopoverOpen(event, book.title)
@@ -224,6 +260,15 @@ function BookList({ isUserLoggedIn }) {
                 <Divider />
                 <div className="bookCardFooter">
                   <h3>${book.price}</h3>
+
+                  <IconButton
+                    aria-label="Add to cart"
+                    onClick={(event) => handleAddToCartButtonClick(event, book)}
+                    style={{ width: '40px', height: '40px', margin: '0' }}
+                  >
+                    <AddShoppingCartIcon />
+                  </IconButton>
+
                   <Button
                     className="viewBtn"
                     type="button"

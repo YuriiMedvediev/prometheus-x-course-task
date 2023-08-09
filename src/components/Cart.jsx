@@ -30,6 +30,7 @@ import { Delete, Add, Remove, Close } from '@mui/icons-material';
 import dogCourier from '../assets/delivery.png';
 import notFoundImage from '../assets/imageNotFound.png';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import ClearIcon from '@mui/icons-material/Clear';
 
 function Cart({ isUserLoggedIn }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -89,12 +90,12 @@ function Cart({ isUserLoggedIn }) {
         startIcon={<ReplyAllTwoToneIcon />}
         onClick={() => navigate('/books')}
       >
-        Back to catalog
+        Back to books
       </Button>
 
       <Button
         type="submit"
-        id="purchaseButton"
+        className="purchaseButton"
         variant="contained"
         size="large"
         color="success"
@@ -105,16 +106,24 @@ function Cart({ isUserLoggedIn }) {
         Purchase
       </Button>
       {cartItems.length > 0 ? (
-        <TableContainer component={Paper}>
+        <TableContainer className="cartTableContainer" component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Image</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Quantity</TableCell>
+                <TableCell>Photo</TableCell>
+                <TableCell>Book's title</TableCell>
+                <TableCell style={{ width: '100px' }}>Quantity</TableCell>
                 <TableCell>Price</TableCell>
                 <TableCell>Subtotal</TableCell>
-                <TableCell></TableCell>
+                <TableCell>
+                  <IconButton
+                    aria-label="clear-cart"
+                    onClick={clearCart}
+                    style={{ color: 'red' }}
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -125,7 +134,7 @@ function Cart({ isUserLoggedIn }) {
                       <img
                         src={item.image || notFoundImage}
                         alt={item.title}
-                        style={{ width: 50 }}
+                        className="cartBookImage"
                       />
                     </Link>
                   </TableCell>
@@ -174,10 +183,16 @@ function Cart({ isUserLoggedIn }) {
                 </TableRow>
               ))}
               <TableRow>
-                <TableCell colSpan={4} align="right">
+                <TableCell
+                  colSpan={4}
+                  align="right"
+                  style={{ fontWeight: 'bold' }}
+                >
                   Total:
                 </TableCell>
-                <TableCell>${totalAmount.toFixed(2)}</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>
+                  ${totalAmount.toFixed(2)}
+                </TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableBody>

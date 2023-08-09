@@ -1,7 +1,6 @@
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useState, useEffect } from 'react';
-import { LocalStorageService, LS_KEYS } from '../services/localStorage';
 import './app.scss';
 import { Layout } from '../routes';
 import SignIn from '../components/SignIn';
@@ -17,7 +16,7 @@ function App() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
   useEffect(() => {
-    let storedUserName = LocalStorageService.getItem(LS_KEYS.USER_NAME);
+    let storedUserName = localStorage.getItem('userName');
     if (storedUserName !== null && storedUserName !== '') {
       setUserName(storedUserName);
       setIsUserLoggedIn(true);
@@ -30,7 +29,7 @@ function App() {
   };
 
   const handleSignOut = () => {
-    LocalStorageService.removeItem(LS_KEYS.USER_NAME);
+    localStorage.removeItem('userName');
     setUserName('');
     setIsUserLoggedIn(false);
   };
