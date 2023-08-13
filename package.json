@@ -1,7 +1,7 @@
 {
   "name": "prometheus-x-course-task",
   "homepage": "https://YuriiMedvediev.github.io/prometheus-x-course-task/",
-  "version": "0.1.0",
+  "version": "1.0.3",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -32,12 +32,6 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [

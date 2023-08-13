@@ -1,9 +1,11 @@
 import { useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { BooksContext } from '../contexts/BooksContext';
 import { CartContext } from '../contexts/CartContext';
-import { useNavigate } from 'react-router-dom';
-import Paper from '@mui/material/Paper';
 import {
+  IconButton,
+  Paper,
   Badge,
   Divider,
   Button,
@@ -15,20 +17,25 @@ import {
   Popover,
   Skeleton,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import { IconButton } from '@mui/material';
-import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
-import notFoundImage from '../assets/imageNotFound.png';
-import cn from 'classnames';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
-function BookList({ isUserLoggedIn }) {
+import SearchIcon from '@mui/icons-material/Search';
+import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import CloseIcon from '@mui/icons-material/Close';
+
+import notFoundImage from '../assets/imageNotFound.png';
+
+import cn from 'classnames';
+
+function BookList({ isUserLoggedIn, userName }) {
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const [priceFilter, setPriceFilter] = useState('all');
   const [booksAfterFilter, setBooksAfterFilter] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [popOverTitle, setPopOverTitle] = useState('');
+  const [anchorElQ, setAnchorElQ] = useState(null);
+  const [sorryPopoverTitle, setSorryPopoverTitle] = useState('');
 
   const books = useContext(BooksContext);
   const { getQuantityById, addToCart, handleAddToCartAnimation } =
@@ -71,7 +78,8 @@ function BookList({ isUserLoggedIn }) {
     setPriceFilter(event.target.value);
   };
 
-  const handleClickView = (bookID) => {
+  const handleClickView = (event, bookID) => {
+    event.stopPropagation();
     navigate(`/books/${bookID}`);
   };
 
@@ -100,16 +108,24 @@ function BookList({ isUserLoggedIn }) {
 
   const handleAddToCartButtonClick = (event, book) => {
     event.preventDefault();
-    const bookItem = {
-      id: book.id,
-      title: book.title,
-      price: book.price,
-      image: book.image,
-      avaliableQuantity: book.amount,
-      quantity: 1,
-    };
-    handleAddToCartAnimation(event, 1, book);
-    addToCart(bookItem, false);
+    event.stopPropagation();
+    if (getQuantityById(book.id, userName) === book.amount) {
+      setSorryPopoverTitle(`Sorry, we have only ${book.amount} books`);
+      setAnchorElQ(event.currentTarget);
+      setTimeout(() => {
+        setAnchorElQ(null);
+      }, 2000);
+    } else {
+      const bookItem = {
+        id: book.id,
+        price: book.price,
+        quantity: 1,
+        userName: userName,
+      };
+
+      handleAddToCartAnimation(event, 1, book);
+      addToCart(bookItem, false);
+    }
   };
 
   const open = Boolean(anchorEl);
@@ -124,18 +140,21 @@ function BookList({ isUserLoggedIn }) {
               animation="wave"
               width={250}
               height={30}
+              className="searchInput"
             />
             <Skeleton
               variant="rounded"
               animation="wave"
               width={250}
               height={30}
+              className="selectPrice"
             />
             <Skeleton
               variant="circular"
               animation="wave"
               width={40}
               height={40}
+              className="filterIcon"
             />
           </section>
 
@@ -170,12 +189,14 @@ function BookList({ isUserLoggedIn }) {
                       animation="wave"
                       width={200}
                       height={40}
+                      style={{ marginRight: '10px' }}
                     />
                     <Skeleton
                       variant="rounded"
                       animation="wave"
                       width={200}
                       height={40}
+                      style={{ marginLeft: '10px' }}
                     />
                   </div>
                 </Paper>
@@ -226,26 +247,23 @@ function BookList({ isUserLoggedIn }) {
           </section>
           {booksAfterFilter.length > 0 ? (
             booksAfterFilter.map((book) => (
-              <Paper elevation={6} className="bookCard" key={book.id}>
-                <div className="bookCardHeader">
-                  {getQuantityById(book.id) > 0 ? (
-                    <Badge
-                      badgeContent={getQuantityById(book.id)}
-                      color="secondary"
-                    >
-                      <img
-                        className="bookCardImage"
-                        src={book.image || notFoundImage}
-                        alt={book.title}
-                      />
-                    </Badge>
-                  ) : (
+              <Paper
+                elevation={6}
+                className="bookCard"
+                key={book.id}
+                onClick={(event) => handleClickView(event, book.id)}
+              >
+                <div className="bookCardHeader ">
+                  <Badge
+                    badgeContent={getQuantityById(book.id, userName)}
+                    color="secondary"
+                  >
                     <img
                       className="bookCardImage"
                       src={book.image || notFoundImage}
                       alt={book.title}
                     />
-                  )}
+                  </Badge>
 
                   <h3
                     onMouseEnter={(event) =>
@@ -275,7 +293,7 @@ function BookList({ isUserLoggedIn }) {
                     variant="contained"
                     color="primary"
                     size="small"
-                    onClick={() => handleClickView(book.id)}
+                    onClick={(event) => handleClickView(event, book.id)}
                   >
                     View
                   </Button>
@@ -303,11 +321,32 @@ function BookList({ isUserLoggedIn }) {
             }}
             onClose={handlePopoverClose}
             disableRestoreFocus
+            disableScrollLock
           >
             <Typography sx={{ p: 1 }}>{popOverTitle}</Typography>
           </Popover>
         </section>
       )}
+
+      <Popover
+        open={Boolean(anchorElQ)}
+        anchorEl={anchorElQ}
+        onClose={() => setAnchorElQ(null)}
+        anchorReference="anchorEl"
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+      >
+        <div style={{ padding: '10px', display: 'flex', alignItems: 'center' }}>
+          <CloseIcon style={{ color: 'red', marginRight: '10px' }} />
+          <span>{sorryPopoverTitle}</span>
+        </div>
+      </Popover>
     </div>
   );
 }

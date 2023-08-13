@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useSpring, config, animated } from 'react-spring';
 import { Link } from 'react-router-dom';
+import { useSpring, config, animated } from 'react-spring';
 import errImg from '../assets/error_404.png';
 import owlImg from '../assets/owl.png';
 

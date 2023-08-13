@@ -1,8 +1,11 @@
-import { TextField, Button, Tooltip, Switch } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { TextField, Button, Tooltip, Switch } from '@mui/material';
+
 import Avatar from '../assets/avatar.png';
 import Hair from '../assets/hair.png';
+
 import cn from 'classnames';
 
 function SignIn({ handleSignIn }) {

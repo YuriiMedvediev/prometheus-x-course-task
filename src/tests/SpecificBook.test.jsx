@@ -1,11 +1,13 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
+
+import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent } from '@testing-library/dom';
+
 import SpecificBook from '../components/SpecificBook';
+
 import { BooksProvider } from '../contexts/BooksContext';
 import { CartProvider } from '../contexts/CartContext';
-import { fireEvent } from '@testing-library/dom';
 
 const renderSpecificBook = (initialEntries) => {
   return render(

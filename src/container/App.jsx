@@ -1,15 +1,18 @@
+import { useState, useEffect } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
-import { useState, useEffect } from 'react';
-import './app.scss';
+
 import { Layout } from '../routes';
 import SignIn from '../components/SignIn';
 import Cart from '../components/Cart';
 import NotFoundPage from '../components/NotFoundPage';
 import SpecificBook from '../components/SpecificBook';
 import BookList from '../components/BookList';
+
 import { BooksProvider } from '../contexts/BooksContext';
 import { CartProvider } from '../contexts/CartContext';
+
+import './app.scss';
 
 function App() {
   const [userName, setUserName] = useState('');
@@ -70,7 +73,7 @@ function App() {
       }
     >
       <BooksProvider>
-        <CartProvider>
+        <CartProvider userName={userName}>
           <HashRouter>
             <Routes>
               <Route
@@ -90,15 +93,27 @@ function App() {
                 />
                 <Route
                   path="cart"
-                  element={<Cart isUserLoggedIn={isUserLoggedIn} />}
+                  element={
+                    <Cart isUserLoggedIn={isUserLoggedIn} userName={userName} />
+                  }
                 />
                 <Route
                   path="books"
-                  element={<BookList isUserLoggedIn={isUserLoggedIn} />}
+                  element={
+                    <BookList
+                      isUserLoggedIn={isUserLoggedIn}
+                      userName={userName}
+                    />
+                  }
                 />
                 <Route
                   path="books/:id"
-                  element={<SpecificBook isUserLoggedIn={isUserLoggedIn} />}
+                  element={
+                    <SpecificBook
+                      isUserLoggedIn={isUserLoggedIn}
+                      userName={userName}
+                    />
+                  }
                 />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>

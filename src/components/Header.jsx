@@ -1,13 +1,15 @@
-import { Button, Popover, Typography } from '@mui/material';
+import { useContext, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+
+import { CartContext } from '../contexts/CartContext';
+
+import { Button, Popover, Typography, Badge } from '@mui/material';
+
 import favicon from '../assets/favicon.ico';
 import avatar from '../assets/avatar.png';
 import cart from '../assets/cart.png';
-import { useNavigate } from 'react-router-dom';
-import { useContext, useState } from 'react';
+
 import cn from 'classnames';
-import { Link } from 'react-router-dom';
-import { Badge } from '@mui/material';
-import { CartContext } from '../contexts/CartContext';
 
 function Header({ userName, isUserLoggedIn, handleSignOut }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -32,7 +34,7 @@ function Header({ userName, isUserLoggedIn, handleSignOut }) {
   const open = Boolean(anchorEl);
 
   return (
-    <header>
+    <header className="header">
       <section className="title">
         <Link to="/books">
           <img src={favicon} height="50" alt="To Do" />
@@ -115,6 +117,7 @@ function Header({ userName, isUserLoggedIn, handleSignOut }) {
           }}
           onClose={handlePopoverClose}
           disableRestoreFocus
+          disableScrollLock
         >
           <Typography
             sx={{
