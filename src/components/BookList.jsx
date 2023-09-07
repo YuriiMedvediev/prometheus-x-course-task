@@ -266,6 +266,7 @@ function BookList({ isUserLoggedIn, userName }) {
                   </Badge>
 
                   <h3
+                    className="bookCardTitle"
                     onMouseEnter={(event) =>
                       handlePopoverOpen(event, book.title)
                     }
